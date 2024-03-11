@@ -10,11 +10,18 @@ time = {
 room = Room()
 def temperature(room, temp=room.temp):
     seasonal_change(room, time)
+    extreme_temps(room, time)
     daily_change(room)
-    if room.temp >= 30:   #implement extreme temperatures
+    if room.temp >= 35 or room.temp <= 0:   #implement extreme temperatures (done)
         print("The temp is "+str(room.temp)+"!")
         t.sleep(1)
     return temp
+
+def decay_check(room):
+    decay(room)
+    if room.decayed == True:
+        exit_sequence()
+    print("The room has", room.wall_durability, "durability left.")
         
 def tick_up(time):
     global ticks
@@ -29,25 +36,39 @@ def tick_up(time):
             if time["month"] + 1 > 13:
                 time["month"] = 1
                 time["year"] += 1
+
+def print_time(time):
+    print("The time is "+str(time["year"])+"."+str(time["month"])+"."+str(time["day"])+" at "+str(time["hour"])+":00. "+str(ticks)+" ticks have occurred ("+str(ticks)+" hours)")
     
 def main():
     day_counter = time["day"]
-    print("The time is "+str(time["year"])+"."+str(time["month"])+"."+str(time["day"])+" at "+str(time["hour"])+":00. "+str(ticks)+" ticks have occurred ("+str(ticks)+" hours)")
+    print_time(time)
     tick_up(time)
     if day_counter != time["day"]:
         temperature(room)
-        print(room.temp)
+    decay_check(room)
 
+def exit_sequence():
+    print("Your room has decayed beyond repair...")
+    t.sleep(3)
+    print("The time was "+str(time["year"])+"."+str(time["month"])+"."+str(time["day"])+" at "+str(time["hour"])+":00. "+str(ticks)+" ticks had occurred ("+str(ticks)+" hours)")
+    t.sleep(3)
+    restart = input("Restart or exit? (r/e): ")
+    if restart == "r":
+        intro()
+    else:
+        exit()
+        
 def intro():
     print("Welcome to the Hyperrealistic Room.")
     t.sleep(1)
     begin = input("Would you like to begin? (y/n): ")
     if begin == "y":
-        while ticks < 1000000:
+        while ticks < 10000000:
             main()
+            #t.sleep(0.02)
     elif begin == "n":
         exit()
 
 if __name__ == "__main__":
-    print(time["year"])
     intro()

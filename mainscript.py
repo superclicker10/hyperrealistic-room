@@ -13,16 +13,19 @@ def temperature(room, temp=room.temp):
     extreme_temps(room, time)
     daily_change(room)
     if room.temp >= 35 or room.temp <= 0:   #implement extreme temperatures (done)
-        print("The temp is "+str(room.temp)+"!")
-        t.sleep(1)
+        print(f"The temp is {round(room.temp)}!")
+        #t.sleep(1)
     return temp
 
 def decay_check(room):
     decay(room)
     if room.decayed == True:
         exit_sequence()
-    print("The room has", room.wall_durability, "durability left.")
-        
+    print("The room has", round(room.wall_durability, 1), "durability left.", room.temp, room.ws)
+
+def wind(room, time):
+    return wind_change(room, time)
+    
 def tick_up(time):
     global ticks
     ticks += 1
@@ -42,11 +45,16 @@ def print_time(time):
     
 def main():
     day_counter = time["day"]
-    print_time(time)
+    room.decay_rate = 1
+    room.temp_change = 2
+    #print_time(time)
     tick_up(time)
     if day_counter != time["day"]:
         temperature(room)
-    decay_check(room)
+        decay_check(room)
+        wind(room, time)
+        print_time(time)
+        t.sleep(0.01)
 
 def exit_sequence():
     print("Your room has decayed beyond repair...")
